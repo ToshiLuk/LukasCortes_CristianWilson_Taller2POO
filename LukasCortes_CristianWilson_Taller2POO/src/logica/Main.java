@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.File;
-
 import dominio.PC;
 import dominio.Puerto;
 
@@ -34,21 +33,23 @@ public class Main {
 			System.out.println("1) Ingresar como Admin.");
 			System.out.println("2) Ingresar como Usuario");
 			System.out.println("3) Salir");
-			System.out.println("Seleccione una opcion:");
+			System.out.print("Ingrese una opción: ");
 			//Menu de eleccion de ingreso
 			opcion = s.nextInt();//Input de eleccion
 			s.nextLine();//Se limpia el buffer
 			//Menu admin
 			switch(opcion) {
 			case 1://
-				do {
-				System.out.println("Ingresó como Admin");
-				System.out.println("1) Ver lista de PCs");
-				System.out.println("2) Agregar/Eliminar PCs con validaciones");
-				System.out.println("3) Clasificación por nivel de riesgo");
-				System.out.println("4) Volver a menu principal");
-				opcionAdmin = s.nextInt();
-				s.nextLine();//Se limpia buffer
+				if (login("ADMIN")) {	
+				do {				 
+					System.out.println("Ingresó como Admin");
+					System.out.println("1) Ver lista de PCs");
+					System.out.println("2) Agregar/Eliminar PCs con validaciones");
+					System.out.println("3) Clasificación por nivel de riesgo");
+					System.out.println("4) Volver al menu principal");
+					System.out.print("Ingrese una opción: ");
+					opcionAdmin = s.nextInt();
+					s.nextLine();//Se limpia buffer
 				switch(opcionAdmin) {
 				case 1:
 					verListaPCs();
@@ -66,14 +67,24 @@ public class Main {
 					System.out.println("Opción no valida. Por favor, intente de nuevo.");
 				}
 			}while(opcionAdmin != 4);
-					break;
+			
+				}else {
+					System.out.println("Acceso denegado.");
+				}
+				break;
 			case 2:
+				if (login("USUARIO")) {
 				do {
 					System.out.println("Ingresó como Usuario");
 					System.out.println("1) Ver lista de PCs");
 					System.out.println("2) Escanear PC");
 					System.out.println("3) Total de puertos abiertos con vulnerabilidades");
+					System.out.println("4) Volver al menú principal");
+					System.out.println("\n Ingrese una opción");
 				}while(opcionUsuario != 4);
+				}else{
+					System.out.println("Acceso denegado.");
+				}
 				break;
 		}
 	
@@ -145,17 +156,63 @@ public class Main {
 	}
 
 	private static void leerPuertos() {
-		
+		// TODO Auto-generated method stub
 	}
 
-	private static void leerUsuarios() {
-		// TODO Auto-generated method stub
+	private static ArrayList<String[]> leerUsuarios() throws FileNotFoundException {
+		File arch = new File("usuarios.txt");
+		ArrayList<String[]> lista = new ArrayList<>();
 		
+		try (Scanner s = new Scanner(arch)){
+			
+			while(s.hasNextLine()) {
+				String linea = s.nextLine();
+				String[] partes = linea.split(";");
+				lista.add(partes);
+			
+			}
+		}catch (FileNotFoundException e) {
+			System.out.println("Error al leer el archivo (usuarios.txt): " + e.getMessage());
+		}
+		return lista;
 	}
+		
+	
 
 	private static void leerVulnerabilidades() {
 		// TODO Auto-generated method stub
 		
 	}
+	private static boolean login(String tipoUsuario) throws FileNotFoundException {
+		Scanner sc = new Scanner(System.in);
+		System.out.print("\nIngrese nombre de usuario: ");
+		String nombreDeUsuario = sc.nextLine().trim();
+		System.out.print("Ingrese contraseña: ");
+		String contraseña = sc.nextLine();
 
+		// archivo usuarios.txt debe tener formato: nombre;contraseña;ROL
+		ArrayList<String[]> usuarios = leerUsuarios();
+
+		for (String[] usuario : usuarios) {
+			if (usuario[0].equals(nombreDeUsuario)) {
+				String contraseñaGuardada = usuario[1];
+				String rol = usuario[2];
+
+				// Verificamos contraseña con hash
+				boolean ok = Autentificacion.comprobarContraseña(contraseña, contraseñaGuardada);
+
+				// Comprobamos que el rol coincida con el tipo de login (Admin o Usuario)
+				if (ok && rol.equalsIgnoreCase(tipoUsuario)) {
+					System.out.println("Login correcto. Bienvenido, " + nombreDeUsuario + ".");
+					return true;
+				} else if (ok) {
+					System.out.println("Usuario correcto pero no tiene permisos de " + tipoUsuario + ".");
+					return false;
+				}
+			}
+		}
+		System.out.println("Usuario o contraseña incorrectos.");
+	return false;
+	}
+	
 }
