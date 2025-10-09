@@ -2,17 +2,25 @@
 //Cristian Harold Wilson Andreu 21.887.896-2 ICCI
 package logica;
 
+import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.io.File;
+
+import dominio.PC;
+import dominio.Puerto;
 
 public class Main {
 	private static Scanner s;
 	public static void main(String[] args) throws FileNotFoundException {
 		
+		ArrayList<PC> PCs = crearListaPcs();
+		crearPuertos(PCs);
+		
+		System.out.println(PCs.get(2).getPuertos().get(2).getNumero());
 		leerVulnerabilidades();
 		leerUsuarios();
-		leerPuertos();
-		leerPuertos();
+		
 		//Lectura de archivos mediante funciones
 		
 		int opcion = 0;
@@ -71,6 +79,55 @@ public class Main {
 	
 		}while(opcion != 3);
 	}
+	
+	private static ArrayList<PC> crearListaPcs() {
+		
+	
+		ArrayList<PC> PCs = new ArrayList<>();
+		
+		try (Scanner sc = new Scanner(new File("pcs.txt"))) {
+			
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				String[] part = line.split("\\|");
+				
+				PC Pc = new PC(part[0],part[1],part[2]);
+				PCs.add(Pc);
+				
+				}
+			
+		} catch(FileNotFoundException e) {
+			System.out.println("Error, no se encontr el archivo: pcs.txt");
+		}
+		
+		return PCs;
+	}//FIN crearListaPcs()
+	
+	private static void crearPuertos(ArrayList<PC> PCs) {
+		
+		
+		try (Scanner sc = new Scanner(new File("puertos.txt"))) {
+			
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				String[] part = line.split("\\|");
+				String id = part[0];
+				int num = Integer.parseInt(part[1]);
+				String status = part[2];
+				
+				for (PC pc : PCs) {
+					if (pc.getId().equals(id)) {
+						pc.setPuertos(new Puerto(num, status));
+						break;
+					}
+				}
+			}
+		} catch(FileNotFoundException e) {
+			System.out.println("Error, no se encontr el archivo: puertos.txt");
+		}
+		
+	}
+
 
 	private static void verListaPCs() {
 		// TODO Auto-generated method stub
