@@ -9,6 +9,7 @@ import java.io.File;
 
 import dominio.PC;
 import dominio.Puerto;
+import dominio.Vulnerabilidad;
 
 public class Main {
 	private static Scanner s;
@@ -16,10 +17,11 @@ public class Main {
 		
 		ArrayList<PC> PCs = crearListaPcs();
 		crearPuertos(PCs);
+		CrearVulnerabilidades(PCs);
+
 		
-		System.out.println(PCs.get(2).getPuertos().get(2).getNumero());
-		leerVulnerabilidades();
-		leerUsuarios();
+		
+		
 		
 		//Lectura de archivos mediante funciones
 		
@@ -119,6 +121,33 @@ public class Main {
 					if (pc.getId().equals(id)) {
 						pc.setPuertos(new Puerto(num, status));
 						break;
+					}
+				}
+			}
+		} catch(FileNotFoundException e) {
+			System.out.println("Error, no se encontr el archivo: puertos.txt");
+		}
+		
+	}
+	
+	private static void CrearVulnerabilidades(ArrayList<PC> PCs) {
+		
+		try (Scanner sc = new Scanner(new File("vulnerabilidades.txt"))) {
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				String[] part = line.split("\\|");
+				
+				int num = Integer.parseInt(part[0]);
+				String nom = part[1];
+				String desc = part[2];
+				
+				for (PC pc : PCs) {
+					ArrayList<Puerto> puertos = pc.getPuertos();
+					for (Puerto puert : puertos) {
+						if (puert.getNumero() == num) {
+							puert.setVulnerabilidades(new Vulnerabilidad(nom,desc));
+						}
+						
 					}
 				}
 			}

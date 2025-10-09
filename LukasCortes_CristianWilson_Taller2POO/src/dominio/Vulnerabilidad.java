@@ -8,5 +8,12 @@ public class Vulnerabilidad {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 	}
+	public String getNombre() {
+		return nombre;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	
 	
 }

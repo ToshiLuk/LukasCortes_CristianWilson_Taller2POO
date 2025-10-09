@@ -10,10 +10,18 @@ public class Puerto {
 
 		this.numero = numero;
 		this.estado = estado;
+		this.vulnerabilidades = new ArrayList<Vulnerabilidad>();
 		
 	}
 	public int getNumero() {
 		return numero;
 	}
+	public void setVulnerabilidades(Vulnerabilidad vulnerabilidad) {
+		this.vulnerabilidades.add(vulnerabilidad);
+	}
+	public ArrayList<Vulnerabilidad> getVulnerabilidades() {
+		return vulnerabilidades;
+	}
+	
 	
 }
