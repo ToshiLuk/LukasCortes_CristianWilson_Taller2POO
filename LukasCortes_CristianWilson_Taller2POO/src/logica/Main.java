@@ -165,7 +165,6 @@ public class Main {
 		} catch(FileNotFoundException e) {
 			System.out.println("Error, no se encontr el archivo: vulnerabilidades.txt");
 		}
-		
 	}
 
 
