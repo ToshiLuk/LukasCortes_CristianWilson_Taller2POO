@@ -19,9 +19,6 @@ public class Main {
 		CrearVulnerabilidades(PCs);
 
 		
-		
-		
-		
 		//Lectura de archivos mediante funciones
 		
 		int opcion = 0;
@@ -54,13 +51,13 @@ public class Main {
 					s.nextLine();//Se limpia buffer
 				switch(opcionAdmin) {
 				case 1:
-					verListaPCs();
+					verListaPCs(PCs);
 					break;
 				case 2:
-					agregarEliminarPCs();
+					agregarEliminarPCs(PCs);
 					break;
 				case 3:
-					clasificacionPorNivelRiesgo();
+					clasificacionPorNivelRiesgo(PCs);
 					break;
 				case 4:
 					System.out.println("Saliendo...");
@@ -83,7 +80,10 @@ public class Main {
 					System.out.println("3) Total de puertos abiertos con vulnerabilidades");
 					System.out.println("4) Volver al menú principal");
 					System.out.println("\n Ingrese una opción");
+					
+					
 				}while(opcionUsuario != 4);
+				
 				}else{
 					System.out.println("Acceso denegado.");
 				}
@@ -168,25 +168,102 @@ public class Main {
 	}
 
 
-	private static void verListaPCs() {
-		// TODO Auto-generated method stub
+	private static void verListaPCs(ArrayList<PC> PCs) {
+		System.out.println("Lista completa de PCs: ");
+		for (PC pc : PCs) {
+			System.out.println(pc.getId() + ": IP-"+pc.getIp()+" SO-"+pc.getSo() );
+			System.out.println("puertos:");
+			for (Puerto p : pc.getPuertos()) {
+				System.out.println("puerto "+p.getNumero()+" estado: "+p.getEstado());
+			}
+			System.out.println();
+		}
 		
 	}
 
-	private static void agregarEliminarPCs() {
-		// TODO Auto-generated method stub
+	private static void agregarEliminarPCs(ArrayList<PC> PCs) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Desea agregar o eliminar un PC? Agregar(1)/Eliminar(2)");
+		int opcion = sc.nextInt();
+		if (opcion == 1) {
+			System.out.print("ingrese ID del nuevo PC: ");
+			String id = sc.nextLine();
+			System.out.println("IP del PC: ");
+			String ip = sc.nextLine();
+			System.out.println("SO del PC: ");
+			String so = sc.nextLine();
+			
+			PC nuevopc = new PC(id,ip,so);
+			
+			System.out.println("Cuantos puerto desea registrar para este pc?: ");
+			int cant = sc.nextInt();
+			for (int i=0 ; i<cant; i++) {
+				System.out.println("Puerto numero"+(i+1));
+				System.out.print("numero del puerto: ");
+				int num = sc.nextInt();
+				System.out.print("estado del puerto: ");
+				String est = sc.nextLine();
+				
+				Puerto p = new Puerto(num,est);
+				nuevopc.setPuertos(p);
+			}
+			PCs.add(nuevopc);
+			System.out.println("PC agregado exitosamente.");
+		} else if (opcion == 2) {
+			System.out.print("Ingrese ID del PC a eliminar: ");
+			String id = sc.nextLine().trim();
+			
+			PC pcdelete = null;
+			for (PC pc : PCs) {
+	               if (pc.getId().equalsIgnoreCase(id)) {
+	                   pcdelete = pc;
+	                   break;
+	               }
+			}
+			if (pcdelete != null) {
+				for (Puerto p : pcdelete.getPuertos()) {
+					p.getVulnerabilidades().clear();
+				}
+				pcdelete.getPuertos().clear();
+				PCs.remove(pcdelete);
+				System.out.println("PC eliminado exitosamente");
+			} else {
+				System.out.println("No se encuentra un PC con se ID");
+			}
+		} else {
+			System.out.println("Opcion no valida, debe ingresar 1 o 2");
+		}
 		
 	}
 
-	private static void clasificacionPorNivelRiesgo() {
-		// TODO Auto-generated method stub
+	private static void clasificacionPorNivelRiesgo(ArrayList<PC> PCs) {
+		System.out.println("Lista de PCs segun riesgo: ");
+		for (PC pc : PCs) {
+			System.out.println(pc.getId()+":");
+			int vul = 0;
+			for (Puerto p : pc.getPuertos()) {
+				vul += p.getVulnerabilidades().size();
+			}
+			System.out.println("Vulnerabilidades: "+vul);
+			if (vul < 2) {
+				if (vul == 0) {
+					System.out.println("Sin vulnerabilidades");
+				} else if (vul == 1) {
+					System.out.println("Numero de vulnerabilidades: 1");
+				}
+				System.out.println("Riesgo BAJO");
+			} else if (vul < 3) {
+				System.out.println("Numero de vulnerabilidades: "+vul);
+				System.out.println("Riesgo MEDIO");
+			} else if (vul >= 3) {
+				System.out.println("Numero de vulnerabilidades: "+vul);
+				System.out.println("Riesgo ALTO");
+			}
+		}
 		
 	}
 
-	private static void leerPuertos() {
-		// TODO Auto-generated method stub
-	}
-
+	
 	private static ArrayList<String[]> leerUsuarios() throws FileNotFoundException {
 		File arch = new File("usuarios.txt");
 		ArrayList<String[]> lista = new ArrayList<>();
@@ -206,11 +283,6 @@ public class Main {
 	}
 		
 	
-
-	private static void leerVulnerabilidades() {
-		// TODO Auto-generated method stub
-		
-	}
 	private static boolean login(String tipoUsuario) throws FileNotFoundException {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("\nIngrese nombre de usuario: ");
@@ -242,5 +314,8 @@ public class Main {
 		System.out.println("Usuario o contraseña incorrectos.");
 	return false;
 	}
+	
+	
+	
 	
 }

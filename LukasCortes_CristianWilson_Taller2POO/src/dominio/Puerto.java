@@ -22,6 +22,9 @@ public class Puerto {
 	public ArrayList<Vulnerabilidad> getVulnerabilidades() {
 		return vulnerabilidades;
 	}
+	public String getEstado() {
+		return estado;
+	}
 	
 	
 }
