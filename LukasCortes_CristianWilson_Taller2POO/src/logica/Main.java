@@ -3,6 +3,7 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.File;
@@ -27,8 +28,9 @@ public class Main {
 		//Inputs para elegir en el menu
 		s = new Scanner(System.in);
 		//Creación de scanner
+		
 		do {
-			System.out.println("Bienvenido a gestion de PCs de la red de SecureNet Ltda.");
+			System.out.println("\nBienvenido a gestion de PCs de la red de SecureNet Ltda.");
 			System.out.println("1) Ingresar como Admin.");
 			System.out.println("2) Ingresar como Usuario");
 			System.out.println("3) Salir");
@@ -38,10 +40,10 @@ public class Main {
 			s.nextLine();//Se limpia el buffer
 			//Menu admin
 			switch(opcion) {
-			case 1://
+			case 1:
 				if (login("ADMIN")) {	
 				do {				 
-					System.out.println("Ingresó como Admin");
+					System.out.println("\nIngresó como Admin");
 					System.out.println("1) Ver lista de PCs");
 					System.out.println("2) Agregar/Eliminar PCs con validaciones");
 					System.out.println("3) Clasificación por nivel de riesgo");
@@ -64,6 +66,7 @@ public class Main {
 					break;
 				default:
 					System.out.println("Opción no valida. Por favor, intente de nuevo.");
+					break;
 				}
 			}while(opcionAdmin != 4);
 			
@@ -72,15 +75,30 @@ public class Main {
 				}
 				break;
 			case 2:
-				if (login("USUARIO")) {
+				if (login("USER")) {
 				do {
-					System.out.println("Ingresó como Usuario");
+					System.out.println("\nIngresó como Usuario");
 					System.out.println("1) Ver lista de PCs");
 					System.out.println("2) Escanear PC");
 					System.out.println("3) Total de puertos abiertos con vulnerabilidades");
 					System.out.println("4) Volver al menú principal");
-					System.out.println("\n Ingrese una opción");
-					
+					System.out.println("Ingrese una opción");
+					opcionUsuario = s.nextInt();
+					s.nextLine();
+				switch(opcionUsuario) {
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				default:
+					System.out.println("Opción no valida. Por favor, intente de nuevo.");
+					break;
+						
+				}
 					
 				}while(opcionUsuario != 4);
 				
@@ -88,9 +106,13 @@ public class Main {
 					System.out.println("Acceso denegado.");
 				}
 				break;
+		default:
+			System.out.println("Opción no valida. Por favor, intente de nuevo.");
+			break;
 		}
 	
 		}while(opcion != 3);
+		
 	}
 	
 	private static ArrayList<PC> crearListaPcs() {
@@ -110,7 +132,7 @@ public class Main {
 				}
 			
 		} catch(FileNotFoundException e) {
-			System.out.println("Error, no se encontr el archivo: pcs.txt");
+			System.out.println("Error, no se encontró el archivo: pcs.txt");
 		}
 		
 		return PCs;
@@ -136,7 +158,7 @@ public class Main {
 				}
 			}
 		} catch(FileNotFoundException e) {
-			System.out.println("Error, no se encontr el archivo: puertos.txt");
+			System.out.println("Error, no se encontró el archivo: puertos.txt");
 		}
 		
 	}
@@ -163,7 +185,7 @@ public class Main {
 				}
 			}
 		} catch(FileNotFoundException e) {
-			System.out.println("Error, no se encontr el archivo: vulnerabilidades.txt");
+			System.out.println("Error, no se encontró el archivo: vulnerabilidades.txt");
 		}
 	}
 
@@ -172,9 +194,9 @@ public class Main {
 		System.out.println("Lista completa de PCs: ");
 		for (PC pc : PCs) {
 			System.out.println(pc.getId() + ": IP-"+pc.getIp()+" SO-"+pc.getSo() );
-			System.out.println("puertos:");
+			System.out.println("Puertos:");
 			for (Puerto p : pc.getPuertos()) {
-				System.out.println("puerto "+p.getNumero()+" estado: "+p.getEstado());
+				System.out.println("Puerto "+p.getNumero()+" Estado: "+p.getEstado());
 			}
 			System.out.println();
 		}
@@ -185,12 +207,13 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Desea agregar o eliminar un PC? Agregar(1)/Eliminar(2)");
 		int opcion = sc.nextInt();
+		sc.nextLine();
 		if (opcion == 1) {
-			System.out.print("ingrese ID del nuevo PC: ");
+			System.out.print("Ingrese ID del nuevo PC: ");
 			String id = sc.nextLine();
-			System.out.println("IP del PC: ");
+			System.out.print("IP del PC: ");
 			String ip = sc.nextLine();
-			System.out.println("SO del PC: ");
+			System.out.print("SO del PC: ");
 			String so = sc.nextLine();
 			
 			PC nuevopc = new PC(id,ip,so);
@@ -198,10 +221,11 @@ public class Main {
 			System.out.println("Cuantos puerto desea registrar para este pc?: ");
 			int cant = sc.nextInt();
 			for (int i=0 ; i<cant; i++) {
-				System.out.println("Puerto numero"+(i+1));
-				System.out.print("numero del puerto: ");
+				System.out.println("Puerto numero "+(i+1));
+				System.out.print("Numero del puerto: ");
 				int num = sc.nextInt();
-				System.out.print("estado del puerto: ");
+				sc.nextLine();
+				System.out.print("Estado del puerto: ");
 				String est = sc.nextLine();
 				
 				Puerto p = new Puerto(num,est);
@@ -285,7 +309,7 @@ public class Main {
 	
 	private static boolean login(String tipoUsuario) throws FileNotFoundException {
 		Scanner sc = new Scanner(System.in);
-		System.out.print("\nIngrese nombre de usuario: ");
+		System.out.print("Ingrese nombre de usuario: ");
 		String nombreDeUsuario = sc.nextLine().trim();
 		System.out.print("Ingrese contraseña: ");
 		String contraseña = sc.nextLine();
