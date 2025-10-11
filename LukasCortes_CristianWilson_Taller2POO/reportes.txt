@@ -1,0 +1,32 @@
+====================================
+Fecha: 2025-10-11 19:32:55
+Usuario: alice
+PC: PC001 IP: 10.0.5.10 SO: Windows 11 Pro
+Nivel de riesgo: ALTO (4 vulnerabilidades)
+Puertos:
+  Puerto 22 Estado: Cerrado
+    - SSH Brute Force | Permite ataques de fuerza bruta contra el servicio SSH para obtener credenciales válidas
+  Puerto 80 Estado: Abierto
+    - HTTP Directory Traversal | Vulnerabilidad que permite acceder a archivos fuera del directorio web mediante secuencias de navegación
+  Puerto 443 Estado: Abierto
+    - SSL/TLS Weak Cipher | Uso de cifrados débiles en la conexión SSL que pueden ser comprometidos por atacantes
+  Puerto 3389 Estado: Abierto
+    - RDP BlueKeep | Vulnerabilidad crítica en Remote Desktop Protocol que permite ejecución remota de código sin autenticación
+====================================
+
+====================================
+Fecha: 2025-10-11 19:44:22
+Usuario: alice
+PC: PC001 IP: 10.0.5.10 SO: Windows 11 Pro
+Nivel de riesgo: ALTO (4 vulnerabilidades)
+Puertos:
+  Puerto 22 Estado: Cerrado
+    - SSH Brute Force | Permite ataques de fuerza bruta contra el servicio SSH para obtener credenciales válidas
+  Puerto 80 Estado: Abierto
+    - HTTP Directory Traversal | Vulnerabilidad que permite acceder a archivos fuera del directorio web mediante secuencias de navegación
+  Puerto 443 Estado: Abierto
+    - SSL/TLS Weak Cipher | Uso de cifrados débiles en la conexión SSL que pueden ser comprometidos por atacantes
+  Puerto 3389 Estado: Abierto
+    - RDP BlueKeep | Vulnerabilidad crítica en Remote Desktop Protocol que permite ejecución remota de código sin autenticación
+====================================
+

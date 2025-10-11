@@ -3,7 +3,6 @@
 package logica;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.File;
@@ -12,6 +11,7 @@ import dominio.Puerto;
 import dominio.Vulnerabilidad;
 
 public class Main {
+	private static String usuarioActual = "";
 	private static Scanner s;
 	public static void main(String[] args) throws FileNotFoundException {
 		
@@ -91,10 +91,10 @@ public class Main {
 					verListaPCs(PCs);
 					break;
 				case 2:
-					escanearPC();
+					escanearPC(PCs);
 					break;
 				case 3:
-					totalDePuertosAbiertosVulnerabilidades();
+					totalDePuertosAbiertosVulnerabilidades(PCs);
 					break;
 				case 4:
 					clasificacionPorIP(PCs);
@@ -123,21 +123,118 @@ public class Main {
 		
 	}
 	
-	private static void totalDePuertosAbiertosVulnerabilidades() {
-		// TODO Auto-generated method stub
-		
+	private static void escanearPC(ArrayList<PC> PCs) {
+	    Scanner sc = new Scanner(System.in);
+	    System.out.print("Ingrese ID del PC a escanear: ");
+	    String id = sc.nextLine().trim();
+
+	    PC target = null;
+	    for (PC pc : PCs) {
+	        if (pc.getId().equalsIgnoreCase(id)) {
+	            target = pc;
+	            break;
+	        }
+	    }
+
+	    if (target == null) {
+	        System.out.println("No se encontró un PC con ese ID.");
+	        return;
+	    }
+
+	    // Mostrar en consola
+	    System.out.println("Escaneando: " + target.getId());
+	    System.out.println("IP: " + target.getIp() + "\nSO: " + target.getSo());
+	    int totalVul = 0;
+	    for (Puerto p : target.getPuertos()) {
+	        System.out.println("Puerto " + p.getNumero() + " Estado: " + p.getEstado());
+	        if (p.getVulnerabilidades() != null && !p.getVulnerabilidades().isEmpty()) {
+	            for (Vulnerabilidad v : p.getVulnerabilidades()) {
+	                System.out.println("  - Vul: " + v.getNombre() + " | " + v.getDescripcion());
+	                totalVul++;
+	            }
+	        } else {
+	            System.out.println("  - Sin vulnerabilidades conocidas.");
+	        }
+	    }
+
+	    String nivel = calcularNivelRiesgo(totalVul);
+	    System.out.println("Nivel de riesgo: " + nivel);
+
+	    // Guardar en reportes.txt
+	    guardarReporteScan(target, nivel, totalVul);
 	}
 
-	private static void escanearPC() {
-		// TODO Auto-generated method stub
-		
+	// 4) Guardar reporte en archivo
+	private static void guardarReporteScan(PC pc, String nivel, int totalVul) {
+	    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+	    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    String fecha = ahora.format(fmt);
+
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("====================================\n");
+	    sb.append("Fecha: ").append(fecha).append("\n");
+	    sb.append("Usuario: ").append(usuarioActual.isEmpty() ? "DESCONOCIDO" : usuarioActual).append("\n");
+	    sb.append("PC: ").append(pc.getId()).append(" IP: ").append(pc.getIp()).append(" SO: ").append(pc.getSo()).append("\n");
+	    sb.append("Nivel de riesgo: ").append(nivel).append(" (").append(totalVul).append(" vulnerabilidades)").append("\n");
+	    sb.append("Puertos:\n");
+	    for (Puerto p : pc.getPuertos()) {
+	        sb.append("  Puerto ").append(p.getNumero()).append(" Estado: ").append(p.getEstado()).append("\n");
+	        if (p.getVulnerabilidades() != null && !p.getVulnerabilidades().isEmpty()) {
+	            for (Vulnerabilidad v : p.getVulnerabilidades()) {
+	                sb.append("    - ").append(v.getNombre()).append(" | ").append(v.getDescripcion()).append("\n");
+	            }
+	        } else {
+	            sb.append("    - Sin vulnerabilidades conocidas\n");
+	        }
+	    }
+	    sb.append("====================================\n\n");
+
+	    try (java.io.FileWriter fw = new java.io.FileWriter("reportes.txt", true);
+	         java.io.BufferedWriter bw = new java.io.BufferedWriter(fw)) {
+	        bw.write(sb.toString());
+	        System.out.println("Reporte guardado en reportes.txt");
+	    } catch (java.io.IOException e) {
+	        System.out.println("Error guardando reporte: " + e.getMessage());
+	    }
+	}
+
+	// 5) Calcular nivel de riesgo 
+	private static String calcularNivelRiesgo(int vul) {
+	    if (vul == 0) return "SIN VULNERABILIDADES";
+	    if (vul == 1) return "BAJO";
+	    if (vul == 2) return "MEDIO";
+	    return "ALTO";
+	}
+
+	//Mostrar total de puertos abiertos en toda la red con su vulnerabilidad
+	private static void totalDePuertosAbiertosVulnerabilidades(ArrayList<PC> PCs) {
+	    System.out.println("Puertos abiertos en la red:");
+	    int contador = 0;
+	    for (PC pc : PCs) {
+	        for (Puerto p : pc.getPuertos()) {
+	            String estado = p.getEstado() == null ? "" : p.getEstado().trim();
+	            boolean abierto = estado.equalsIgnoreCase("open") || estado.equalsIgnoreCase("abierto") ||
+	                              estado.equalsIgnoreCase("true") || estado.equalsIgnoreCase("activo");
+	            if (abierto) {
+	                contador++;
+	                System.out.println("PC: " + pc.getId() + " IP: " + pc.getIp() + " -> Puerto " + p.getNumero());
+	                if (p.getVulnerabilidades() != null && !p.getVulnerabilidades().isEmpty()) {
+	                    for (Vulnerabilidad v : p.getVulnerabilidades()) {
+	                        System.out.println("   - Vulnerabilidad: " + v.getNombre() + " | " + v.getDescripcion());
+	                    }
+	                } else {
+	                    System.out.println("   - Sin vulnerabilidades conocidas.");
+	                }
+	            }
+	        }
+	    }
+	    System.out.println("Total de puertos abiertos: " + contador);
 	}
 
 	private static ArrayList<PC> crearListaPcs() {
 		
 	
 		ArrayList<PC> PCs = new ArrayList<>();
-		
 		try (Scanner sc = new Scanner(new File("pcs.txt"))) {
 			
 			while (sc.hasNextLine()) {
@@ -366,8 +463,6 @@ public class Main {
 		String nombreDeUsuario = sc.nextLine().trim();
 		System.out.print("Ingrese contraseña: ");
 		String contraseña = sc.nextLine();
-
-		// archivo usuarios.txt debe tener formato: nombre;contraseña;ROL
 		ArrayList<String[]> usuarios = leerUsuarios();
 
 		for (String[] usuario : usuarios) {
@@ -380,6 +475,7 @@ public class Main {
 
 				// Comprobamos que el rol coincida con el tipo de login (Admin o Usuario)
 				if (ok && rol.equalsIgnoreCase(tipoUsuario)) {
+					usuarioActual = nombreDeUsuario; //Se guarda el usuario logueado
 					System.out.println("Login correcto. Bienvenido, " + nombreDeUsuario + ".");
 					return true;
 				} else if (ok) {
