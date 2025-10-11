@@ -315,7 +315,39 @@ public class Main {
 	return false;
 	}
 	
-	
+	private static void clasificacionPorIp(ArrayList<PC> PCs) {
+		
+		ArrayList<PC> claseA = new ArrayList<>();
+	    ArrayList<PC> claseB = new ArrayList<>();
+	    ArrayList<PC> claseC = new ArrayList<>();
+		
+		for (PC pc : PCs) {
+	        String ip = pc.getIp();
+	        String[] part = ip.split("\\.");
+	        int primernum = Integer.parseInt(part[0]);
+
+	        if (primernum >= 0 && primernum <= 127) {
+	            claseA.add(pc);
+	        } else if (primernum >= 128 && primernum <= 191) {
+	            claseB.add(pc);
+	        } else if (primernum >= 192 && primernum <= 223) {
+	            claseC.add(pc);
+	        }
+	    }
+		
+		System.out.println("Pcs ordenados por categorias segun IP:");
+		System.out.println("Clase A:");
+		for (PC pc : claseA) {
+			System.out.println(pc.getId()+" IP: "+pc.getIp());
+		}
+		for (PC pc : claseB) {
+			System.out.println(pc.getId()+" IP: "+pc.getIp());
+		}
+		for (PC pc : claseC) {
+			System.out.println(pc.getId()+" IP: "+pc.getIp());
+		}
+		
+	}
 	
 	
 }
