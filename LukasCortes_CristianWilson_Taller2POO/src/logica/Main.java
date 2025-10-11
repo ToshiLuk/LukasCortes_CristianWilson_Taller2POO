@@ -81,18 +81,26 @@ public class Main {
 					System.out.println("1) Ver lista de PCs");
 					System.out.println("2) Escanear PC");
 					System.out.println("3) Total de puertos abiertos con vulnerabilidades");
-					System.out.println("4) Volver al menú principal");
-					System.out.println("Ingrese una opción");
+					System.out.println("4) Ordenar PCs según IP");
+					System.out.println("5) Volver al menú principal");
+					System.out.print("Ingrese una opción: ");
 					opcionUsuario = s.nextInt();
 					s.nextLine();
 				switch(opcionUsuario) {
 				case 1:
+					verListaPCs(PCs);
 					break;
 				case 2:
+					escanearPC();
 					break;
 				case 3:
+					totalDePuertosAbiertosVulnerabilidades();
 					break;
 				case 4:
+					clasificacionPorIP(PCs);
+					break;
+				case 5:
+					System.out.println("Saliendo...");
 					break;
 				default:
 					System.out.println("Opción no valida. Por favor, intente de nuevo.");
@@ -100,7 +108,7 @@ public class Main {
 						
 				}
 					
-				}while(opcionUsuario != 4);
+				}while(opcionUsuario != 5);
 				
 				}else{
 					System.out.println("Acceso denegado.");
@@ -115,6 +123,16 @@ public class Main {
 		
 	}
 	
+	private static void totalDePuertosAbiertosVulnerabilidades() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void escanearPC() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private static ArrayList<PC> crearListaPcs() {
 		
 	
@@ -188,7 +206,7 @@ public class Main {
 			System.out.println("Error, no se encontró el archivo: vulnerabilidades.txt");
 		}
 	}
-
+	
 
 	private static void verListaPCs(ArrayList<PC> PCs) {
 		System.out.println("Lista completa de PCs: ");
@@ -339,7 +357,7 @@ public class Main {
 	return false;
 	}
 	
-	private static void clasificacionPorIp(ArrayList<PC> PCs) {
+	private static void clasificacionPorIP(ArrayList<PC> PCs) {
 		
 		ArrayList<PC> claseA = new ArrayList<>();
 	    ArrayList<PC> claseB = new ArrayList<>();
@@ -348,9 +366,9 @@ public class Main {
 		for (PC pc : PCs) {
 	        String ip = pc.getIp();
 	        String[] part = ip.split("\\.");
-	        int primernum = Integer.parseInt(part[0]);
+	        int primernum = Integer.parseInt(part[0].trim());
 
-	        if (primernum >= 0 && primernum <= 127) {
+	        if (primernum >= 1 && primernum <= 126) {
 	            claseA.add(pc);
 	        } else if (primernum >= 128 && primernum <= 191) {
 	            claseB.add(pc);
@@ -360,16 +378,20 @@ public class Main {
 	    }
 		
 		System.out.println("Pcs ordenados por categorias segun IP:");
-		System.out.println("Clase A:");
-		for (PC pc : claseA) {
-			System.out.println(pc.getId()+" IP: "+pc.getIp());
-		}
-		for (PC pc : claseB) {
-			System.out.println(pc.getId()+" IP: "+pc.getIp());
-		}
-		for (PC pc : claseC) {
-			System.out.println(pc.getId()+" IP: "+pc.getIp());
-		}
+	    System.out.println("Clase A (" + claseA.size() + "):");
+	    for (PC pc : claseA) {
+	        System.out.println(pc.getId() + " IP: " + pc.getIp());
+	    }
+
+	    System.out.println("\nClase B (" + claseB.size() + "):");
+	    for (PC pc : claseB) {
+	        System.out.println(pc.getId() + " IP: " + pc.getIp());
+	    }
+
+	    System.out.println("\nClase C (" + claseC.size() + "):");
+	    for (PC pc : claseC) {
+	        System.out.println(pc.getId() + " IP: " + pc.getIp());
+	    }
 		
 	}
 	
