@@ -154,7 +154,7 @@ public class Main {
 		}
 		
 		return PCs;
-	}//FIN crearListaPcs()
+	}
 	
 	private static void crearPuertos(ArrayList<PC> PCs) {
 		
@@ -222,61 +222,96 @@ public class Main {
 	}
 
 	private static void agregarEliminarPCs(ArrayList<PC> PCs) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Desea agregar o eliminar un PC? Agregar(1)/Eliminar(2)");
-		int opcion = sc.nextInt();
-		sc.nextLine();
-		if (opcion == 1) {
-			System.out.print("Ingrese ID del nuevo PC: ");
-			String id = sc.nextLine();
-			System.out.print("IP del PC: ");
-			String ip = sc.nextLine();
-			System.out.print("SO del PC: ");
-			String so = sc.nextLine();
-			
-			PC nuevopc = new PC(id,ip,so);
-			
-			System.out.println("Cuantos puerto desea registrar para este pc?: ");
-			int cant = sc.nextInt();
-			for (int i=0 ; i<cant; i++) {
-				System.out.println("Puerto numero "+(i+1));
-				System.out.print("Numero del puerto: ");
-				int num = sc.nextInt();
-				sc.nextLine();
-				System.out.print("Estado del puerto: ");
-				String est = sc.nextLine();
-				
-				Puerto p = new Puerto(num,est);
-				nuevopc.setPuertos(p);
-			}
-			PCs.add(nuevopc);
-			System.out.println("PC agregado exitosamente.");
-		} else if (opcion == 2) {
-			System.out.print("Ingrese ID del PC a eliminar: ");
-			String id = sc.nextLine().trim();
-			
-			PC pcdelete = null;
-			for (PC pc : PCs) {
-	               if (pc.getId().equalsIgnoreCase(id)) {
-	                   pcdelete = pc;
-	                   break;
-	               }
-			}
-			if (pcdelete != null) {
-				for (Puerto p : pcdelete.getPuertos()) {
-					p.getVulnerabilidades().clear();
-				}
-				pcdelete.getPuertos().clear();
-				PCs.remove(pcdelete);
-				System.out.println("PC eliminado exitosamente");
-			} else {
-				System.out.println("No se encuentra un PC con se ID");
-			}
-		} else {
-			System.out.println("Opcion no valida, debe ingresar 1 o 2");
-		}
-		
+	    Scanner sc = new Scanner(System.in);
+	    System.out.println("Desea agregar o eliminar un PC? Agregar(1)/Eliminar(2)");
+	    int opcion = sc.nextInt();
+	    sc.nextLine();
+	    if (opcion == 1) {
+	        System.out.print("Ingrese ID del nuevo PC: ");
+	        String id = sc.nextLine();
+	        System.out.print("IP del PC: ");
+	        String ip = sc.nextLine();
+	        System.out.print("SO del PC: ");
+	        String so = sc.nextLine();
+
+	        PC nuevopc = new PC(id, ip, so);
+
+	        System.out.println("Cuantos puerto desea registrar para este pc?: ");
+	        int cant = sc.nextInt();
+	        sc.nextLine(); // limpiar buffer
+	        for (int i = 0; i < cant; i++) {
+	            System.out.println("Puerto numero " + (i + 1));
+	            System.out.print("Numero del puerto: ");
+	            int num = sc.nextInt();
+	            sc.nextLine();
+	            System.out.print("Estado del puerto: ");
+	            String est = sc.nextLine();
+
+	            Puerto p = new Puerto(num, est);
+	            nuevopc.setPuertos(p);
+	        }
+	        asignarVulnerabilidadesAPuertos(nuevopc);
+
+	        PCs.add(nuevopc);
+	        System.out.println("PC agregado exitosamente.");
+	    } else if (opcion == 2) {
+	        System.out.print("Ingrese ID del PC a eliminar: ");
+	        String id = sc.nextLine().trim();
+
+	        PC pcdelete = null;
+	        for (PC pc : PCs) {
+	            if (pc.getId().equalsIgnoreCase(id)) {
+	                pcdelete = pc;
+	                break;
+	            }
+	        }
+	        if (pcdelete != null) {
+	            for (Puerto p : pcdelete.getPuertos()) {
+	                if (p.getVulnerabilidades() != null) {
+	                    p.getVulnerabilidades().clear();
+	                }
+	            }
+	            pcdelete.getPuertos().clear();
+	            PCs.remove(pcdelete);
+	            System.out.println("PC eliminado exitosamente");
+	        } else {
+	            System.out.println("No se encuentra un PC con ese ID");
+	        }
+	    } else {
+	        System.out.println("Opcion no valida, debe ingresar 1 o 2");
+	    }
+
 	}
+
+
+	private static void asignarVulnerabilidadesAPuertos(PC pc) {
+	    File arch = new File("vulnerabilidades.txt");
+	    try (Scanner sc = new Scanner(arch)) {
+	        while (sc.hasNextLine()) {
+	            String line = sc.nextLine().trim();
+	            if (line.isEmpty()) continue;
+	            String[] part = line.split("\\|");
+	            if (part.length < 3) continue; 
+	            int num;
+	            try {
+	                num = Integer.parseInt(part[0].trim());
+	            } catch (NumberFormatException e) {
+	                continue; 
+	            }
+	            String nom = part[1].trim();
+	            String desc = part[2].trim();
+
+	            for (Puerto puert : pc.getPuertos()) {
+	                if (puert.getNumero() == num) {	                    
+	                    puert.setVulnerabilidades(new Vulnerabilidad(nom, desc));
+	                }
+	            }
+	        }
+	    } catch (FileNotFoundException e) {
+	        System.out.println("Error, no se encontró el archivo: vulnerabilidades.txt");
+	    }
+	}
+
 
 	private static void clasificacionPorNivelRiesgo(ArrayList<PC> PCs) {
 		System.out.println("Lista de PCs segun riesgo: ");
