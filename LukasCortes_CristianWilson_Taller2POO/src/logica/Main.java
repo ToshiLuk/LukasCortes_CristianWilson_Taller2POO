@@ -399,9 +399,9 @@ public class Main {
 
 	private static void asignarVulnerabilidadesAPuertos(PC pc) {//Se crea lista con las vulnerabilidades leyendo vulnerabilidades.txt y con la clase Vulnerabilidad
 	    File arch = new File("vulnerabilidades.txt");
-	    try (Scanner sc = new Scanner(arch)) {
-	        while (sc.hasNextLine()) {
-	            String line = sc.nextLine().trim();
+	    try (Scanner s = new Scanner(arch)) {
+	        while (s.hasNextLine()) {
+	            String line = s.nextLine().trim();
 	            if (line.isEmpty()) continue;
 	            String[] part = line.split("\\|");
 	            if (part.length < 3) continue; 
