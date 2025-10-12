@@ -29,114 +29,132 @@ public class Main {
 		s = new Scanner(System.in);
 		//Creación de scanner
 		
-		do {
-			System.out.println("\nBienvenido a gestion de PCs de la red de SecureNet Ltda.");
-			System.out.println("1) Ingresar como Admin.");
-			System.out.println("2) Ingresar como Usuario");
-			System.out.println("3) Salir");
-			System.out.print("Ingrese una opción: ");
-			//Menu de eleccion de ingreso
-			opcion = s.nextInt();//Input de eleccion
-			s.nextLine();//Se limpia el buffer
-			//Menu admin
-			switch(opcion) {
-			case 1:
-				if (login("ADMIN")) {	
-				do {				 
-					System.out.println("\nIngresó como Admin");
-					System.out.println("1) Ver lista de PCs");
-					System.out.println("2) Agregar/Eliminar PCs con validaciones");
-					System.out.println("3) Clasificación por nivel de riesgo");
-					System.out.println("4) Volver al menu principal");
-					System.out.print("Ingrese una opción: ");
-					opcionAdmin = s.nextInt();
-					s.nextLine();//Se limpia buffer
-				switch(opcionAdmin) {
-				case 1:
-					verListaPCs(PCs);
-					break;
-				case 2:
-					agregarEliminarPCs(PCs);
-					break;
-				case 3:
-					clasificacionPorNivelRiesgo(PCs);
-					break;
-				case 4:
-					System.out.println("Saliendo...");
-					break;
-				default:
-					System.out.println("Opción no valida. Por favor, intente de nuevo.");
-					break;
-				}
-			}while(opcionAdmin != 4);
-			
-				}else {
-					System.out.println("Acceso denegado.");
-				}
-				break;
-			case 2:
-				if (login("USER")) {
-				do {
-					System.out.println("\nIngresó como Usuario");
-					System.out.println("1) Ver lista de PCs");
-					System.out.println("2) Escanear PC");
-					System.out.println("3) Total de puertos abiertos con vulnerabilidades");
-					System.out.println("4) Ordenar PCs según IP");
-					System.out.println("5) Volver al menú principal");
-					System.out.print("Ingrese una opción: ");
-					opcionUsuario = s.nextInt();
-					s.nextLine();
-				switch(opcionUsuario) {
-				case 1:
-					verListaPCs(PCs);
-					break;
-				case 2:
-					escanearPC(PCs);
-					break;
-				case 3:
-					totalDePuertosAbiertosVulnerabilidades(PCs);
-					break;
-				case 4:
-					clasificacionPorIP(PCs);
-					break;
-				case 5:
-					System.out.println("Saliendo...");
-					break;
-				default:
-					System.out.println("Opción no valida. Por favor, intente de nuevo.");
-					break;
-						
-				}
-					
-				}while(opcionUsuario != 5);
-				
-				}else{
-					System.out.println("Acceso denegado.");
-				}
-				break;
-		default:
-			System.out.println("Opción no valida. Por favor, intente de nuevo.");
-			break;
-		}
-	
-		}while(opcion != 3);
-		
+		do { //Menu de eleccion de ingreso
+		    System.out.println("\nBienvenido a gestion de PCs de la red de SecureNet Ltda.");
+		    System.out.println("1) Ingresar como Admin.");
+		    System.out.println("2) Ingresar como Usuario");
+		    System.out.println("3) Salir");
+		    System.out.print("Ingrese una opción: ");
+
+		    try {
+		        opcion = s.nextInt(); // Intentamos leer número
+		        s.nextLine(); // Limpiamos el buffer
+
+		        switch (opcion) {
+		            case 1:
+		                if (login("ADMIN")) {
+		                    do {
+		                        System.out.println("\nIngresó como Admin");
+		                        System.out.println("1) Ver lista de PCs");
+		                        System.out.println("2) Agregar/Eliminar PCs con validaciones");
+		                        System.out.println("3) Clasificación por nivel de riesgo");
+		                        System.out.println("4) Volver al menu principal");
+		                        System.out.print("Ingrese una opción: ");
+		                        try {
+		                            opcionAdmin = s.nextInt();
+		                            s.nextLine();
+		                            switch (opcionAdmin) {
+		                                case 1:
+		                                    verListaPCs(PCs);
+		                                    break;
+		                                case 2:
+		                                    agregarEliminarPCs(PCs);
+		                                    break;
+		                                case 3:
+		                                    clasificacionPorNivelRiesgo(PCs);
+		                                    break;
+		                                case 4:
+		                                    System.out.println("Saliendo...");
+		                                    break;
+		                                default:
+		                                    System.out.println("Opción no válida. Por favor, intente de nuevo.");
+		                                    break;
+		                            }
+		                        } catch (java.util.InputMismatchException e) {
+		                            System.out.println("Error: debe ingresar un número válido.");
+		                            s.nextLine(); // limpiar buffer
+		                            opcionAdmin = 0; // Reiniciamos para seguir en el menú
+		                        }
+		                    } while (opcionAdmin != 4);
+		                } else {
+		                    System.out.println("Acceso denegado.");
+		                }
+		                break;
+
+		            case 2:
+		                if (login("USER")) {
+		                    do {
+		                        System.out.println("\nIngresó como Usuario");
+		                        System.out.println("1) Ver lista de PCs");
+		                        System.out.println("2) Escanear PC");
+		                        System.out.println("3) Total de puertos abiertos con vulnerabilidades");
+		                        System.out.println("4) Ordenar PCs según IP");
+		                        System.out.println("5) Volver al menú principal");
+		                        System.out.print("Ingrese una opción: ");
+		                        try {
+		                            opcionUsuario = s.nextInt();
+		                            s.nextLine();
+		                            switch (opcionUsuario) {
+		                                case 1:
+		                                    verListaPCs(PCs);
+		                                    break;
+		                                case 2:
+		                                    escanearPC(PCs);
+		                                    break;
+		                                case 3:
+		                                    totalDePuertosAbiertosVulnerabilidades(PCs);
+		                                    break;
+		                                case 4:
+		                                    clasificacionPorIP(PCs);
+		                                    break;
+		                                case 5:
+		                                    System.out.println("Saliendo...");
+		                                    break;
+		                                default:
+		                                    System.out.println("Opción no válida. Por favor, intente de nuevo.");
+		                                    break;
+		                            }
+		                        } catch (java.util.InputMismatchException e) {
+		                            System.out.println("Error: debe ingresar un número válido.");
+		                            s.nextLine();
+		                            opcionUsuario = 0;
+		                        }
+		                    } while (opcionUsuario != 5);
+		                } else {
+		                    System.out.println("Acceso denegado.");
+		                }
+		                break;
+
+		            case 3:
+		                System.out.println("Saliendo del programa...");
+		                break;
+
+		            default:
+		                System.out.println("Opción no válida. Por favor, intente de nuevo.");
+		                break;
+		        }
+
+		    } catch (java.util.InputMismatchException e) {
+		        System.out.println("Error: debe ingresar un número válido.");
+		        s.nextLine(); // Limpiar buffer y evitar bucle infinito
+		    }
+
+		} while (opcion != 3);
+		s.close();
 	}
 	
-	private static void escanearPC(ArrayList<PC> PCs) {
-	    Scanner sc = new Scanner(System.in);
+	private static void escanearPC(ArrayList<PC> PCs) {//Funcion para escanear PC
+		String id = s.nextLine().trim();
 	    System.out.print("Ingrese ID del PC a escanear: ");
-	    String id = sc.nextLine().trim();
-
 	    PC target = null;
 	    for (PC pc : PCs) {
-	        if (pc.getId().equalsIgnoreCase(id)) {
-	            target = pc;
+	        if (pc.getId().equalsIgnoreCase(id)) {//Buscamos la id del PC que ingresamos
+	            target = pc;//Guardamos el PC cuando lo encontremos
 	            break;
 	        }
 	    }
 
-	    if (target == null) {
+	    if (target == null) {//Por si no se encuentra el PC que se ingreso
 	        System.out.println("No se encontró un PC con ese ID.");
 	        return;
 	    }
@@ -157,20 +175,20 @@ public class Main {
 	        }
 	    }
 
-	    String nivel = calcularNivelRiesgo(totalVul);
+	    String nivel = calcularNivelRiesgo(totalVul);//Se calcula el riesgo del PC para ingresarlo al reporte
 	    System.out.println("Nivel de riesgo: " + nivel);
 
 	    // Guardar en reportes.txt
 	    guardarReporteScan(target, nivel, totalVul);
 	}
 
-	// 4) Guardar reporte en archivo
+	//Guardar reporte en archivo
 	private static void guardarReporteScan(PC pc, String nivel, int totalVul) {
-	    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
-	    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();//Conseguimos la hora y fecha actual
+	    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 	    String fecha = ahora.format(fmt);
 
-	    StringBuilder sb = new StringBuilder();
+	    StringBuilder sb = new StringBuilder();//Creamos un StringBuilder que es mas facil de modificar
 	    sb.append("====================================\n");
 	    sb.append("Fecha: ").append(fecha).append("\n");
 	    sb.append("Usuario: ").append(usuarioActual.isEmpty() ? "DESCONOCIDO" : usuarioActual).append("\n");
@@ -188,7 +206,7 @@ public class Main {
 	        }
 	    }
 	    sb.append("====================================\n\n");
-
+	    //Creamos reportes.txt y le agregamos el reporte 
 	    try (java.io.FileWriter fw = new java.io.FileWriter("reportes.txt", true);
 	         java.io.BufferedWriter bw = new java.io.BufferedWriter(fw)) {
 	        bw.write(sb.toString());
@@ -198,7 +216,7 @@ public class Main {
 	    }
 	}
 
-	// 5) Calcular nivel de riesgo 
+	//Calcular nivel de riesgo 
 	private static String calcularNivelRiesgo(int vul) {
 	    if (vul == 0) return "SIN VULNERABILIDADES";
 	    if (vul == 1) return "BAJO";
@@ -213,8 +231,8 @@ public class Main {
 	    for (PC pc : PCs) {
 	        for (Puerto p : pc.getPuertos()) {
 	            String estado = p.getEstado() == null ? "" : p.getEstado().trim();
-	            boolean abierto = estado.equalsIgnoreCase("open") || estado.equalsIgnoreCase("abierto") ||
-	                              estado.equalsIgnoreCase("true") || estado.equalsIgnoreCase("activo");
+	            //Comprobamos el estado del puerto
+	            boolean abierto = estado.equalsIgnoreCase("abierto");
 	            if (abierto) {
 	                contador++;
 	                System.out.println("PC: " + pc.getId() + " IP: " + pc.getIp() + " -> Puerto " + p.getNumero());
@@ -231,18 +249,16 @@ public class Main {
 	    System.out.println("Total de puertos abiertos: " + contador);
 	}
 
-	private static ArrayList<PC> crearListaPcs() {
-		
-	
+	private static ArrayList<PC> crearListaPcs() { //Creamos la lista de PCs leyendo pcs.txt y usando la clase PC
 		ArrayList<PC> PCs = new ArrayList<>();
-		try (Scanner sc = new Scanner(new File("pcs.txt"))) {
+		try (Scanner sc = new Scanner(new File("pcs.txt"))) {//Leemos pcs.txt
 			
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				String[] part = line.split("\\|");
 				
-				PC Pc = new PC(part[0],part[1],part[2]);
-				PCs.add(Pc);
+				PC Pc = new PC(part[0],part[1],part[2]);//Creamos un PC
+				PCs.add(Pc);//Lo agregamos a la lista de PCs
 				
 				}
 			
@@ -253,7 +269,7 @@ public class Main {
 		return PCs;
 	}
 	
-	private static void crearPuertos(ArrayList<PC> PCs) {
+	private static void crearPuertos(ArrayList<PC> PCs) {//Creamos una lista con los puertos leyendo puertos.txt y la clase Puerto
 		
 		
 		try (Scanner sc = new Scanner(new File("puertos.txt"))) {
@@ -278,7 +294,7 @@ public class Main {
 		
 	}
 	
-	private static void CrearVulnerabilidades(ArrayList<PC> PCs) {
+	private static void CrearVulnerabilidades(ArrayList<PC> PCs) {//Creamos una lista de vulnerabilidades leyendo vulnerabilidades.txt y con la clase Vulnerabilidad
 		
 		try (Scanner sc = new Scanner(new File("vulnerabilidades.txt"))) {
 			while (sc.hasNextLine()) {
@@ -305,7 +321,7 @@ public class Main {
 	}
 	
 
-	private static void verListaPCs(ArrayList<PC> PCs) {
+	private static void verListaPCs(ArrayList<PC> PCs) {//Se imprime todos los PCs con su informacion
 		System.out.println("Lista completa de PCs: ");
 		for (PC pc : PCs) {
 			System.out.println(pc.getId() + ": IP-"+pc.getIp()+" SO-"+pc.getSo() );
@@ -318,42 +334,42 @@ public class Main {
 		
 	}
 
-	private static void agregarEliminarPCs(ArrayList<PC> PCs) {
-	    Scanner sc = new Scanner(System.in);
+	private static void agregarEliminarPCs(ArrayList<PC> PCs) {//Agregamos un PC con toda su info o eliminamos un PC ya existente
+
 	    System.out.println("Desea agregar o eliminar un PC? Agregar(1)/Eliminar(2)");
-	    int opcion = sc.nextInt();
-	    sc.nextLine();
+	    int opcion = s.nextInt();
+	    s.nextLine();
 	    if (opcion == 1) {
 	        System.out.print("Ingrese ID del nuevo PC: ");
-	        String id = sc.nextLine();
+	        String id = s.nextLine();
 	        System.out.print("IP del PC: ");
-	        String ip = sc.nextLine();
+	        String ip = s.nextLine();
 	        System.out.print("SO del PC: ");
-	        String so = sc.nextLine();
+	        String so = s.nextLine();
 
 	        PC nuevopc = new PC(id, ip, so);
 
 	        System.out.println("Cuantos puerto desea registrar para este pc?: ");
-	        int cant = sc.nextInt();
-	        sc.nextLine(); // limpiar buffer
+	        int cant = s.nextInt();
+	        s.nextLine(); // limpiar buffer
 	        for (int i = 0; i < cant; i++) {
 	            System.out.println("Puerto numero " + (i + 1));
 	            System.out.print("Numero del puerto: ");
-	            int num = sc.nextInt();
-	            sc.nextLine();
+	            int num = s.nextInt();
+	            s.nextLine();
 	            System.out.print("Estado del puerto: ");
-	            String est = sc.nextLine();
+	            String est = s.nextLine();
 
 	            Puerto p = new Puerto(num, est);
 	            nuevopc.setPuertos(p);
 	        }
-	        asignarVulnerabilidadesAPuertos(nuevopc);
+	        asignarVulnerabilidadesAPuertos(nuevopc);//Buscamos vulnerabilidades al nuevo PC
 
-	        PCs.add(nuevopc);
+	        PCs.add(nuevopc);//Agregamos el PC nuevo
 	        System.out.println("PC agregado exitosamente.");
 	    } else if (opcion == 2) {
 	        System.out.print("Ingrese ID del PC a eliminar: ");
-	        String id = sc.nextLine().trim();
+	        String id = s.nextLine().trim();
 
 	        PC pcdelete = null;
 	        for (PC pc : PCs) {
@@ -381,7 +397,7 @@ public class Main {
 	}
 
 
-	private static void asignarVulnerabilidadesAPuertos(PC pc) {
+	private static void asignarVulnerabilidadesAPuertos(PC pc) {//Se crea lista con las vulnerabilidades leyendo vulnerabilidades.txt y con la clase Vulnerabilidad
 	    File arch = new File("vulnerabilidades.txt");
 	    try (Scanner sc = new Scanner(arch)) {
 	        while (sc.hasNextLine()) {
@@ -456,19 +472,18 @@ public class Main {
 		return lista;
 	}
 		
-	
+	//Función para logearse
 	private static boolean login(String tipoUsuario) throws FileNotFoundException {
-		Scanner sc = new Scanner(System.in);
 		System.out.print("Ingrese nombre de usuario: ");
-		String nombreDeUsuario = sc.nextLine().trim();
+		String nombreDeUsuario = s.nextLine().trim();
 		System.out.print("Ingrese contraseña: ");
-		String contraseña = sc.nextLine();
-		ArrayList<String[]> usuarios = leerUsuarios();
+		String contraseña = s.nextLine();
+		ArrayList<String[]> usuarios = leerUsuarios();//Leemos usuarios.txt
 
 		for (String[] usuario : usuarios) {
-			if (usuario[0].equals(nombreDeUsuario)) {
-				String contraseñaGuardada = usuario[1];
-				String rol = usuario[2];
+			if (usuario[0].equals(nombreDeUsuario)) {//Buscamos si el nombre de usuario ingresado está en usuarios.txt
+				String contraseñaGuardada = usuario[1];//Guardamos la contraseña hasheada del usuario
+				String rol = usuario[2]; //Guardamos rol del usuario
 
 				// Verificamos contraseña con hash
 				boolean ok = Autentificacion.comprobarContraseña(contraseña, contraseñaGuardada);
@@ -487,17 +502,17 @@ public class Main {
 		System.out.println("Usuario o contraseña incorrectos.");
 	return false;
 	}
-	
+	//Clasificacion de PCs por IP
 	private static void clasificacionPorIP(ArrayList<PC> PCs) {
-		
+		//Creamos ArrayList para cada clase
 		ArrayList<PC> claseA = new ArrayList<>();
 	    ArrayList<PC> claseB = new ArrayList<>();
 	    ArrayList<PC> claseC = new ArrayList<>();
 		
-		for (PC pc : PCs) {
-	        String ip = pc.getIp();
-	        String[] part = ip.split("\\.");
-	        int primernum = Integer.parseInt(part[0].trim());
+		for (PC pc : PCs) {//Vamos PC por PC
+	        String ip = pc.getIp();//Sacamos la ip
+	        String[] part = ip.split("\\.");//Separamos la IP en puntos
+	        int primernum = Integer.parseInt(part[0].trim());//
 
 	        if (primernum >= 1 && primernum <= 126) {
 	            claseA.add(pc);
